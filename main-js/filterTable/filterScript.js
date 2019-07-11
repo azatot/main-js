@@ -29,10 +29,19 @@
 
         }
 
-        dos_wrap_currentNode = function(idValue) {
+        dos_wrap_currentNode = function(idValue, position) {
             this.wrapper = document.createElement("div");
             this.wrapper.id = idValue;
-            this.wrapper.style.cssText = "display: flex; flex-direction: row"
+            this.wrapper.style.cssText = `
+                display: flex;
+                flex-direction: row; 
+                margin: 0.5em;
+                padding: 1em;
+                position: ${position};
+                z-index: 100;
+                background: darkgray;
+
+                `
             this.wrapper.append(this.createdNode);
             console.log(this.wrapper);
 
@@ -51,6 +60,7 @@
                 height: ${height}${heightUnits};
                 border: 1px solid;
                 align-items: center;
+                align-self: center;
                 text-align: center;
                 justify-content: center;
                 padding: 0.5em;
@@ -70,12 +80,12 @@
     let firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active"); 
     firstDiv.dos_createNode("TEXT");
     firstDiv.dos_css_setSize(5, 5, "em"); 
-    document.body.prepend(firstDiv.dos_wrap_currentNode("dos_wrapper"));
+    document.body.prepend(firstDiv.dos_wrap_currentNode("dos_wrapper", "fixed"));
     
     let secondDiv = new Dos_HTML_Element("div", "dos_secondDiv");
     secondDiv.dos_createNode("");
-    // secondDiv.dos_css_setSize(2,2,"em");
-    document.querySelector("#dos_wrapper").append(secondDiv.dos_wrap_currentNode("new_dos_wrapper"))
+    document.querySelector("#dos_wrapper").append(secondDiv.dos_wrap_currentNode("new_dos_wrapper", "none"));
+
     document.querySelector("#new_dos_wrapper").style.opacity = "0";
     document.querySelector("#new_dos_wrapper").style.transition = "all 0.2s cubic-bezier(0.51, 0.1, 0.96, 0.3) 0s";
     document.querySelector("#new_dos_wrapper").style.border = "1px solid";
@@ -88,8 +98,6 @@
 
     let firstInput = new Dos_HTML_Element("input", "dos_wrapper_filter", "");
     let newInput = firstInput.dos_createNode("123123");
-    // newInput.style.opacity = "";
-    // newInput.style.transition = "0.2s";
     newInput.style.height = "32px";
     newInput.style.alignSelf = "center";
     newInput.style.margin = "0.5em";
@@ -102,7 +110,6 @@
     submitInput.type = "submit";
     submitInput.style.borderStyle = "none";
     submitInput.style.border = "1px solid";
-    // submitInput.style.borderLeft = "1px solid";
     
     submitInput.style.background = "none";
     submitInput.style.height = "3em";
@@ -116,7 +123,6 @@
     let input = document.querySelector("input");
     let targetElements = [];
     let vpNameList = document.querySelectorAll("td");
-    // let wrapper = document.createElement("div");
 
     function insertArgs(...args) {
         let arr = [...args];
@@ -178,19 +184,12 @@
                     document.querySelector("#new_dos_wrapper").style.display = "none";
                     visible = false;
                 }, 199);
-                
-
-                console.log(1)
             } else {
                 document.querySelector("#new_dos_wrapper").style.display = "flex";
                 visible = true;
                 setTimeout(() => {
                     document.querySelector("#new_dos_wrapper").style.opacity = '1';
-                    
                 }, 199);
-                
-                
-
                 
             }
         }
