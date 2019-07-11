@@ -478,19 +478,91 @@
 		})();
 
 		/* your code here */
-		
+		let body = document.body;
+		let menu = document.querySelector("ul.menu");
+		let imgs = document.querySelectorAll("img");
+		let newImage = document.createElement("img");
+		// #12
+
 		let tr, td, th, table = document.querySelector("#mp tbody");
-		tr = table.querySelector("tr");
-		table.onmouseover = function actionOnHover(event, target) {
-			target = event.target;
-			target.parentElement.children[0].style.backgroundColor = "darkgray";
+			tr = table.querySelector("tr");
+			table.onmouseover = function actionOnHover(event, target, index) {
+				target = event.target;
+				index = Array.from(target.parentElement.children).indexOf(target);
+
+				target.style.backgroundColor = "darkgray";
+				target.parentElement.children[0].style.backgroundColor = "darkgray";
+				tr.children[index].style.backgroundColor = "darkgray";
+
+				table.onmouseout = function actionOnOut() {
+					target.parentElement.children[0].style.backgroundColor = null;
+					tr.children[1].style.backgroundColor = null;
+					tr.children[index].style.backgroundColor = null;
+					target.style.backgroundColor = null;
+
+				}
+			}
+		// #13
+		function addImageInDivBox(url){
+			let divBox = document.querySelector("div#box");
+			let imageUrl = url;
 			
+			newImage.src = imageUrl;
+			return 	divBox.append(newImage);
 		}
-		table.onmouseout = function actionOnOut(event, target) {
-			target = event.target;
-			target.parentElement.children[0].style.backgroundColor = null;
+		addImageInDivBox("https://images-na.ssl-images-amazon.com/images/I/61mggbFAMuL._SY606_.jpg");
+		// 14
+		function replaceMenuToTopOfBody(){
+			
+			body.prepend(menu);	
+			console.log(menu);
 		}
-		console.log(table);
+		replaceMenuToTopOfBody();
+		// 15
+		function copyMenuToBottomOfBody(){
+			let copyOfMenu = menu.cloneNode(true);
+			console.log(copyOfMenu)
+			body.append(copyOfMenu); 
+		}
+		copyMenuToBottomOfBody();
+		// 16
+		function addBorderToAllImages(set){
+			let redBorder = "border: 5px solid purple";
+			let imgs = document.querySelectorAll("img");
+			if(set === true){
+				imgs.forEach(function(el){
+					return el.style.cssText = redBorder;
+				})
+			} else {
+				return false
+			}
+		}
+		addBorderToAllImages(true);
+		// 17
+		function uncheckCheckBoxes() {
+			let inputs = document.querySelectorAll("input");
+			inputs.forEach(function (el) {
+				if(el.hasAttribute("checked")) return el.removeAttribute("checked");
+			})
+		}
+		uncheckCheckBoxes();
+		// 18 + 19 + 20
+		function countParagraphs() {
+			let ps = document.querySelectorAll("p");
+			ps.forEach(function(el, iterator){
+				iterator = iterator + 1;
+				el.dataset.id = iterator;
+				console.log(el);
+				console.log(el.dataset.id);
+				
+				if(!(+(el.dataset.id) % 2)) {el.className = "hey"};	// 19
+				
+				el.classList.toggle("bordered") // 20
+				
+			})
+		}
+		countParagraphs()
+		
 
 	</script>
 
