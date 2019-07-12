@@ -13,8 +13,8 @@
             this.createdNode = null;
            
         }
-    
-        dos_createNode = function(string) {
+    // комент тут
+        dos_createNode(string) {
             this.createdNode = document.createElement(this.html_tag);
             this.createdNode.id = this.html_id;
             this.createdNode.className = this.html_class;
@@ -29,7 +29,7 @@
 
         }
 
-        dos_wrap_currentNode = function(idValue, position) {
+        dos_wrap_currentNode(idValue, position) {
             this.wrapper = document.createElement("div");
             this.wrapper.id = idValue;
             this.wrapper.style.cssText = `
@@ -51,7 +51,7 @@
         }
 
 
-        dos_css_setSize = function(width, height, heightUnits, display = "flex") {
+        dos_css_setSize(width, height, heightUnits, display = "flex") {
             let setStyle = this.createdNode.style; 
             setStyle.cssText = 
             `
