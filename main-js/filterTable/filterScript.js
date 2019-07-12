@@ -1,126 +1,118 @@
 // Task priorities:
-    // 1) зробити скрипт універсальним, розбивши його на css-маніпуляції
-    // вийшло створити цілий клас з конструктором який створює елементи
-    // 2) створити універсальні функції, які базуються на аргументах та колбеках
-
-
-
-    class Dos_HTML_Element {
-        constructor(html_tag, html_id, html_class, html_text) {
-            this.html_tag = html_tag;
-            this.html_id = html_id;
-            this.html_class = html_class;
-            this.createdNode = null;
-           
-        }
-    // комент тут
-        dos_createNode(string) {
-            this.createdNode = document.createElement(this.html_tag);
-            this.createdNode.id = this.html_id;
-            this.createdNode.className = this.html_class;
-            this.createdNode.innerText = String(string);
-
-            // Строка 2* - єдиний не універсальний вираз
-            // він каже, перед яким дочірнім елементом (тут <table class = "price-search">)
-            // батька <div id = "divMain">
-            // вставити щойно створений createdNode
-            
-            return this.createdNode;
-
-        }
-
-        dos_wrap_currentNode(idValue, position) {
-            this.wrapper = document.createElement("div");
-            this.wrapper.id = idValue;
-            this.wrapper.style.cssText = `
+// 1) зробити скрипт універсальним, розбивши його на css-маніпуляції
+// вийшло створити цілий клас з конструктором який створює елементи
+// 2) створити універсальні функції, які базуються на аргументах та колбеках
+class Dos_HTML_Element {
+    constructor(html_tag, html_id, html_class, html_text) {
+        this.html_el = document.createElement(html_tag);
+        this.html_el.id = html_id;
+        this.html_el.className = html_class;
+        this.html_el.innerText = html_text;
+        this.html_el.type;
+        
+        this.wrapper;
+        
+    }
+    dos_wrap_currentNode(idValue, position) {
+        this.wrapper = document.createElement("div");
+        this.wrapper.id = idValue;
+        this.wrapper.style.cssText = `
                 display: flex;
                 flex-direction: row; 
-                margin: 0.5em;
-                padding: 1em;
+                margin: 0em;
+                padding: 0;
+                
                 position: ${position};
                 z-index: 100;
                 background: darkgray;
-
-                `
-            this.wrapper.append(this.createdNode);
-            console.log(this.wrapper);
-
-            return this.wrapper;
-            
-            
-        }
-
-
-        dos_css_setSize(width, height, heightUnits, display = "flex") {
-            let setStyle = this.createdNode.style; 
-            setStyle.cssText = 
-            `
-                display: ${display};
-                width: ${width}${heightUnits};
-                height: ${height}${heightUnits};
-                border: 1px solid;
-                align-items: center;
-                align-self: center;
-                text-align: center;
-                justify-content: center;
-                padding: 0.5em;
-                background-color: ;
-                cursor: pointer;
-            `
-            // console.log(setStyle.cssText.split(";"))
-        }
-        
-        
-        get html_attributes() {
-            return ` тег: ${this.html_tag} \n ідентифікатор: ${this.html_id} \n клас: ${this.html_class}`
-        }
-    
+                `;
+        this.wrapper.append(this.html_el);
+        return this.wrapper;
     }
-    // константа, в яку записується новий елемент html
-    let firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active"); 
-    firstDiv.dos_createNode("TEXT");
-    firstDiv.dos_css_setSize(5, 5, "em"); 
+    dos_css_setSize(width, height, heightUnits, display = "flex") {
+        this.html_el.style.cssText = 
+        `
+            display: ${display};
+            width: ${width}${heightUnits};
+            height: ${height}${heightUnits};
+            border: 1px solid;
+            align-items: center;
+            align-self: center;
+            text-align: center;
+            justify-content: center;
+            padding: 0.5em;
+            background-color: ;
+            cursor: pointer;
+        `
+
+    }
+
+}
+
+
+    // створення елементів і задання їм місця на сторінці
+    let firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active", "SHOW"); 
+        firstDiv.dos_css_setSize(5, 5, 'em');
     document.body.prepend(firstDiv.dos_wrap_currentNode("dos_wrapper", "fixed"));
-    
-    let secondDiv = new Dos_HTML_Element("div", "dos_secondDiv");
-    secondDiv.dos_createNode("");
-    document.querySelector("#dos_wrapper").append(secondDiv.dos_wrap_currentNode("new_dos_wrapper", "none"));
+    // document.querySelector("#dos_firstDiv").dos_css_setSize(5, 5, "em");
+    let dos_wrapper = document.querySelector("#dos_wrapper");
 
-    document.querySelector("#new_dos_wrapper").style.opacity = "0";
-    document.querySelector("#new_dos_wrapper").style.transition = "all 0.2s cubic-bezier(0.51, 0.1, 0.96, 0.3) 0s";
-    document.querySelector("#new_dos_wrapper").style.border = "1px solid";
-
-    document.querySelector("#new_dos_wrapper").style.paddingLeft = "0.5em";
-    document.querySelector("#new_dos_wrapper").style.paddingRight = "1em";
-    document.querySelector("#new_dos_wrapper").style.marginLeft = "0.5em";
-
+    let secondDiv = new Dos_HTML_Element("div", "dos_secondDiv", "dos_active", null);
     
 
-    let firstInput = new Dos_HTML_Element("input", "dos_wrapper_filter", "");
-    let newInput = firstInput.dos_createNode("123123");
-    newInput.style.height = "32px";
+    dos_wrapper.append(secondDiv.dos_wrap_currentNode("new_dos_wrapper", "none"));
+    let new_dos_wrapper = document.querySelector("#new_dos_wrapper");
+
+
+    // styling new_dos_wrapper
+    new_dos_wrapper.style.opacity = "0";
+    new_dos_wrapper.style.display = "none";
+    new_dos_wrapper.style.transition = "all 0.3s";
+    new_dos_wrapper.style.border = "1px solid";
+    new_dos_wrapper.style.paddingLeft = "1em";
+    new_dos_wrapper.style.paddingRight = "1em";
+    new_dos_wrapper.style.marginLeft = "0.5em";
+
+
+    // ну не створюється в мене інпут через конструктор, сука!
+    // створив поле вводу
+    let newInput = document.createElement("input");
+    new_dos_wrapper.append(newInput);
+    newInput.style.height = "38px";
     newInput.style.alignSelf = "center";
-    newInput.style.margin = "0.5em";
-    document.querySelector("#new_dos_wrapper").append(newInput);
+    newInput.style.margin = "0em";
+    newInput.style.border = "none";
+    newInput.style.fontSize = "1.5em";
+    newInput.style.paddingLeft = "10px";
+    // newInput.style.paddingTop = "5px";
+    // newInput.style.paddingBottom = "5px";
+    newInput.style.width = "150px";
+    
+    newInput.style.fontWeight = "bold";
+    newInput.style.fontFamily = "Arial";
+    
+    
+    // кнопка для пошуку
+    let submitInput = document.createElement("input");
+    submitInput.type = "submit";
+    new_dos_wrapper.append(submitInput);
 
-
-    let secondInput = new Dos_HTML_Element("input", "dos_submit_input", "button");
-    let submitInput = secondInput.dos_createNode();
-    document.querySelector("#new_dos_wrapper").append(submitInput);
     submitInput.type = "submit";
     submitInput.style.borderStyle = "none";
     submitInput.style.border = "1px solid";
-    
     submitInput.style.background = "none";
     submitInput.style.height = "3em";
+    submitInput.style.marginLeft = "0.5em";
     submitInput.style.display = "flex";
     submitInput.style.alignSelf = "center";
     submitInput.style.cursor = "pointer";
 
 
 
-    
-    let input = document.querySelector("input");
+    console.log()
+    console.log(firstDiv)
+
+    let input = document.querySelectorAll("input");
     let targetElements = [];
     let vpNameList = document.querySelectorAll("td");
 
@@ -162,7 +154,7 @@
     }
     function popDownWindow() {
         if (String(newInput.value) == "") {
-            newInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 0px 3px inset";
+            newInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 3px 3px inset";
         } else {
             insertArgs(newInput.value);
             newInput.value = "";
@@ -176,34 +168,46 @@
 
     (function showPopUpWindow() {
         let visible = false;
-            document.querySelector("#dos_firstDiv").onclick = function showClose() {
+            firstDiv.html_el.onclick = function showClose() {
                 
             if (visible) {
-                document.querySelector("#new_dos_wrapper").style.opacity = '0';
+                new_dos_wrapper.style.opacity = '0';
+                visible = false;
+                
                 setTimeout(() => {
-                    document.querySelector("#new_dos_wrapper").style.display = "none";
-                    visible = false;
+                    firstDiv.html_el.innerText = "SHOW"
+                    
+                    new_dos_wrapper.style.display = "none"
                 }, 199);
+               
             } else {
-                document.querySelector("#new_dos_wrapper").style.display = "flex";
+                new_dos_wrapper.style.opacity = '1';
                 visible = true;
+                
                 setTimeout(() => {
-                    document.querySelector("#new_dos_wrapper").style.opacity = '1';
+                    firstDiv.html_el.innerText = "HIDE"
+                    
+                    new_dos_wrapper.style.display = "flex";
                 }, 199);
+                
+                
+                
+                
                 
             }
         }
         document.querySelector("#dos_wrapper").onmouseover = function() {
             start_color = event.target.style.backgroundColor;
-            if (event.target.id === firstDiv.html_id) {
+            if (event.target.id === firstDiv.html_el.id) {
                 event.target.style.cssText += `
-                    background-color: darkgray;
+                    background-color: white;
                     cursor: pointer;
-                `;   
+                `;
+                   
             }
         }
         document.querySelector("#dos_wrapper").onmouseout = function() {
-            if (event.target.id === firstDiv.html_id) {
+            if (event.target.id === firstDiv.html_el.id) {
                 event.target.style.backgroundColor = start_color;
             }
         }
