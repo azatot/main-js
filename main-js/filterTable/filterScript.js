@@ -48,7 +48,7 @@ _DosFilter = () => {
             display: flex;
             width: 7em;
             height: 7em;
-            background-color: rgb(130, 130, 130);
+            background-color: rgb(226, 226, 226);
             padding: 0px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px 0px #515151;
@@ -67,7 +67,7 @@ _DosFilter = () => {
             border: 0px solid;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
-            background: darkgray;
+            background: rgb(226, 226, 226);
             box-shadow: 0px 0px 8px 0px #00000070;
 
         `,
@@ -119,7 +119,7 @@ _DosFilter = () => {
     const clearButton = new Dos_HTML_Element("input", "dos_clear_button");
     clearButton.type = "submit";
     clearButton.value = "CLEAR";
-console.log(document.querySelector("i"))
+    
     // styling this elements
     dos_wrapper.style.cssText = _stylesObj.main_wrapper;
     firstDiv.style.cssText = _stylesObj.button_Show;
