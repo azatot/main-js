@@ -1,5 +1,5 @@
 _DosFilter = () => {
-    function Dos_HTML_Element(html_tag, html_id=null, html_class=null, html_text=null, html_html=null) {
+    function Dos_HTML_Element(html_tag, html_id = null, html_class = null, html_text = null, html_html = null) {
         let html_el = document.createElement(html_tag);
         html_el.id = html_id;
         html_el.className = html_class;
@@ -41,7 +41,7 @@ _DosFilter = () => {
             cursor: pointer;
 
         `,
-        
+
         button_Hide: ``,
 
         arrow: `
@@ -60,7 +60,7 @@ _DosFilter = () => {
             display: none;
             flex-direction: row;
             margin: 0em 0em 0em 0.5em;
-            padding: 0px 1em;
+            padding: 0px 0.5em 0 1em;
             z-index: 100;
             opacity: 1;
             transition: .3s;
@@ -80,7 +80,7 @@ _DosFilter = () => {
             border-radius: 5px;
             font-size: 16px;
             padding-left: 10px;
-            width: 150px;
+            width: 200px;
             font-weight: light;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
@@ -92,15 +92,22 @@ _DosFilter = () => {
             align-self: center;
             width: 6em;
             height: 2.65em;
-            margin-left: 0.5em;
+            
             background: none;
             border: 1px solid;
             cursor: pointer;
             font-size: smaller;
-            
+            transition: 0.2s;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             
+        `,
 
+        buttons_wrapper: `
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            
+            margin: 0 1em;
         `
 
     }
@@ -108,7 +115,7 @@ _DosFilter = () => {
     // creating elements
     const firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active", "SHOW");
     const dos_arrow = new Dos_HTML_Element("img", null, null, null);
-        dos_arrow.src = "https://unitronicsplc.com/wp-content/uploads/intense-cache/icons/plugin/font-awesome/arrow-circle-right.svg";
+    dos_arrow.src = "https://unitronicsplc.com/wp-content/uploads/intense-cache/icons/plugin/font-awesome/arrow-circle-right.svg";
     const dos_wrapper = new Dos_HTML_Element("div", "dos_wrapper", "dos_active")
     const new_dos_wrapper = new Dos_HTML_Element("div", "dos_secondDiv", "dos_active");
     const newInput = new Dos_HTML_Element("input");
@@ -119,6 +126,7 @@ _DosFilter = () => {
     const clearButton = new Dos_HTML_Element("input", "dos_clear_button");
     clearButton.type = "submit";
     clearButton.value = "CLEAR";
+    const buttonWrapper = new Dos_HTML_Element("div", "dos_buts_wrapper")
     
     // styling this elements
     dos_wrapper.style.cssText = _stylesObj.main_wrapper;
@@ -128,6 +136,7 @@ _DosFilter = () => {
     newInput.style.cssText = _stylesObj.filter_Input_Field;
     submitInput.style.cssText = _stylesObj.filter_Submit_Button;
     clearButton.style.cssText = _stylesObj.filter_Submit_Button;
+    buttonWrapper.style.cssText = _stylesObj.buttons_wrapper;
 
     // appearing those elements
     document.body.prepend(dos_wrapper);
@@ -135,43 +144,52 @@ _DosFilter = () => {
     firstDiv.appendChild(dos_arrow);
     dos_wrapper.append(new_dos_wrapper);
     new_dos_wrapper.append(newInput);
-    new_dos_wrapper.append(submitInput);
-    new_dos_wrapper.append(clearButton)
+    new_dos_wrapper.append(buttonWrapper);
+    buttonWrapper.append(submitInput);
+    buttonWrapper.append(clearButton);
 
     // main logic
     let targetElements = [];
+    let counter = 0;
     const startTransform = dos_arrow.style.transform;
     const vpNameList = (tag) => document.querySelectorAll(tag);
-
+    // 2потім ця
     insertArgs = (...args) => {
         let arr = [...args];
-        arr.forEach((el) => {
-            return highlightElements(el, "green")
-        })
-
+        if (targetElements !== 0) {
+            newInput.placeholder = "ACCESS! Elements found";
+            arr.forEach((el) => {
+                formatAllTextToLowCase(el, "green");
+            })
+        }
+        if (targetElements.length === 0) {
+            newInput.placeholder = "NOT FOUND ELEMENTS";
+        }
+        console.log(targetElements)
+    }
+    
+    formatAllTextToLowCaseAndHightLight = (str, color) => {
+        str = str.toLowerCase();
+        return highlightElements(str, color);
     }
 
-    highlightElements = (str, color) => {
-
-        // у 126 строці аргументом вводиться потрібний для виділленяня тег
+    // 1спочатку відпрацьовує ця
+    highlightElements = (str, bgColor) => {
         vpNameList("td").forEach((el, i) => {
             let lowCaseText = el.innerText.toLowerCase();
             if (lowCaseText.includes(str)) {
-                el.style.backgroundColor = color;
+                el.style.backgroundColor = bgColor;
                 targetElements.push(el);
             }
-
         })
-        console.log(targetElements)
-
     }
 
+    // 3 і ця
     clearHighlight = () => {
         targetElements.forEach((el) => {
             el.style.backgroundColor = null;
-
         })
-
+        targetElements.length = 0;
     }
 
     popDownWindow = () => {
@@ -195,8 +213,8 @@ _DosFilter = () => {
                     cursor: pointer;
 
                 `;
-                
-            } 
+
+            }
 
         }
         dos_wrapper.onmouseout = () => {
@@ -204,33 +222,33 @@ _DosFilter = () => {
                 event.target.style.backgroundColor = start_color;
 
             }
-            
+
         }
-        
+
         firstDiv.onclick = showClose = () => {
-            
+
             if (visible) {
                 visible = false;
                 new_dos_wrapper.style.opacity = '0';
-                
+
                 if (event.target.tagName === "IMG") {
                     event.target.style.transform = startTransform;
-                    
+
                 }
-                
+
                 setTimeout(() => {
                     new_dos_wrapper.style.display = "none";
-                    
+
                 }, 300);
 
             } else {
                 visible = true;
-                
+
                 if (event.target.tagName === "IMG") {
                     event.target.style.transform = "scale(-1,1)"
                 }
-               
-                
+
+
 
                 setTimeout(() => {
                     new_dos_wrapper.style.display = "flex";
@@ -244,7 +262,12 @@ _DosFilter = () => {
     }
     showPopUpWindow();
 
-    submitInput.addEventListener("click", popDownWindow)
+    submitInput.addEventListener("click", popDownWindow);
+
+    // для цього треба повторити каррінг, щоб написати одну ф-ію, яка буде працювати в різному контексті
+    // submitInput.addEventListener("mouseover", submHover);
+    // clearButton.addEventListener("mouseover", hoverOnButton);
+
     clearButton.addEventListener("click", clearHighlight)
 }
 _DosFilter();
