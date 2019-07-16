@@ -46,7 +46,7 @@ _DosFilter = () => {
 
         arrow: `
             display: flex;
-            width: 7em;
+            
             height: 7em;
             background-color: rgb(226, 226, 226);
             padding: 0px;
@@ -113,28 +113,28 @@ _DosFilter = () => {
     }
 
     // creating elements
-    const firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active", "SHOW");
-    const dos_arrow = new Dos_HTML_Element("img", null, null, null);
+    const firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active");
+    const dos_arrow = new Dos_HTML_Element("img");
     dos_arrow.src = "https://unitronicsplc.com/wp-content/uploads/intense-cache/icons/plugin/font-awesome/arrow-circle-right.svg";
     const dos_wrapper = new Dos_HTML_Element("div", "dos_wrapper", "dos_active")
     const new_dos_wrapper = new Dos_HTML_Element("div", "dos_secondDiv", "dos_active");
     const newInput = new Dos_HTML_Element("input");
     newInput.placeholder = 'words to search...';
-    const submitInput = new Dos_HTML_Element("input", "dos_search_button");
-    submitInput.type = "submit";
-    submitInput.value = "FIND";
+    const submitButton = new Dos_HTML_Element("input", "dos_search_button");
+    submitButton.type = "submit";
+    submitButton.value = "FIND";
     const clearButton = new Dos_HTML_Element("input", "dos_clear_button");
     clearButton.type = "submit";
     clearButton.value = "CLEAR";
     const buttonWrapper = new Dos_HTML_Element("div", "dos_buts_wrapper")
-    
+
     // styling this elements
     dos_wrapper.style.cssText = _stylesObj.main_wrapper;
     firstDiv.style.cssText = _stylesObj.button_Show;
     dos_arrow.style.cssText = _stylesObj.arrow;
     new_dos_wrapper.style.cssText = _stylesObj.wrapper_For_Inputs;
     newInput.style.cssText = _stylesObj.filter_Input_Field;
-    submitInput.style.cssText = _stylesObj.filter_Submit_Button;
+    submitButton.style.cssText = _stylesObj.filter_Submit_Button;
     clearButton.style.cssText = _stylesObj.filter_Submit_Button;
     buttonWrapper.style.cssText = _stylesObj.buttons_wrapper;
 
@@ -145,64 +145,72 @@ _DosFilter = () => {
     dos_wrapper.append(new_dos_wrapper);
     new_dos_wrapper.append(newInput);
     new_dos_wrapper.append(buttonWrapper);
-    buttonWrapper.append(submitInput);
+    buttonWrapper.append(submitButton);
     buttonWrapper.append(clearButton);
 
+
+
     // main logic
-    let targetElements = [];
+    let findedElements = [];
     let counter = 0;
     const startTransform = dos_arrow.style.transform;
-    const vpNameList = (tag) => document.querySelectorAll(tag);
-    // 2потім ця
-    insertArgs = (...args) => {
-        let arr = [...args];
-        if (targetElements !== 0) {
-            newInput.placeholder = "ACCESS! Elements found";
-            arr.forEach((el) => {
-                formatAllTextToLowCase(el, "green");
-            })
+    let vpNameList = document.querySelectorAll("td");
+
+
+
+    // 1
+    startSearch = () => {
+        if (String(newInput.value) == "") {
+            newInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 3px 3px inset";
+            newInput.placeholder = "Please, type something here"
+        } else {
+            let formattedValues = newInput.value.split(',');
+            formattedValues = formattedValues.map(el => el = String(el.toLowerCase().trim()));
+
+            insertArgs(formattedValues);
+            newInput.value = "";
+            
         }
-        if (targetElements.length === 0) {
-            newInput.placeholder = "NOT FOUND ELEMENTS";
-        }
-        console.log(targetElements)
+
     }
-    
-    formatAllTextToLowCaseAndHightLight = (str, color) => {
-        str = str.toLowerCase();
-        return highlightElements(str, color);
+    // 2
+    let insertArgs = (formattedArray) => {
+        console.log(formattedArray)
+        vpNameList.forEach((el, i) => {
+            console.log(el.innerText.indexOf(formattedArray[i]));
+            
+        })
     }
 
-    // 1спочатку відпрацьовує ця
+    // 3
+    someFunc = (str, bgColor) => {
+        
+    }
+
+    // 4
     highlightElements = (str, bgColor) => {
         vpNameList("td").forEach((el, i) => {
-            let lowCaseText = el.innerText.toLowerCase();
-            if (lowCaseText.includes(str)) {
-                el.style.backgroundColor = bgColor;
-                targetElements.push(el);
+            let lowCaseText = el.innerText.toLowerCase().trim();
+            if (lowCaseText.includes("цільова строка")) {
+                console.log(" ");
             }
         })
     }
 
-    // 3 і ця
+
+
+    // 5
     clearHighlight = () => {
-        targetElements.forEach((el) => {
+        findedElements.forEach((el) => {
             el.style.backgroundColor = null;
         })
-        targetElements.length = 0;
+        findedElements.length = 0;
     }
 
-    popDownWindow = () => {
-        if (String(newInput.value) == "") {
-            newInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 3px 3px inset";
-        } else {
-            insertArgs(newInput.value);
-            newInput.value = "";
 
-        }
 
-    }
 
+   // події, прикраси та вспливашки
     showPopUpWindow = () => {
         let visible = false;
         dos_wrapper.onmouseover = () => {
@@ -226,48 +234,57 @@ _DosFilter = () => {
         }
 
         firstDiv.onclick = showClose = () => {
-
             if (visible) {
-                visible = false;
-                new_dos_wrapper.style.opacity = '0';
-
                 if (event.target.tagName === "IMG") {
+                    visible = false;
                     event.target.style.transform = startTransform;
-
+                    new_dos_wrapper.style.opacity = '0';
                 }
-
                 setTimeout(() => {
                     new_dos_wrapper.style.display = "none";
-
                 }, 300);
-
             } else {
-                visible = true;
-
                 if (event.target.tagName === "IMG") {
-                    event.target.style.transform = "scale(-1,1)"
+                    visible = true;
+                    event.target.style.transform = "scale(-1,1)";
+                    new_dos_wrapper.style.opacity = 1;
                 }
-
-
-
                 setTimeout(() => {
                     new_dos_wrapper.style.display = "flex";
-                    new_dos_wrapper.style.opacity = '1';
                 }, 300);
-
             }
-
         }
 
     }
     showPopUpWindow();
 
-    submitInput.addEventListener("click", popDownWindow);
+    function buttonsHover(event) {
+        const style = this.style;
 
-    // для цього треба повторити каррінг, щоб написати одну ф-ію, яка буде працювати в різному контексті
-    // submitInput.addEventListener("mouseover", submHover);
-    // clearButton.addEventListener("mouseover", hoverOnButton);
+        if (event.type === "mouseover") {
+            style.backgroundColor = "black";
+            style.color = "white";
+            style.border = "none";
+        } else if (event.type === "mouseout") {
+            style.background = "none";
+            style.color = "black";
+            style.border = "1px solid";
+        }
 
-    clearButton.addEventListener("click", clearHighlight)
+    }
+
+    eventListeners = (() => {
+        submitButton.addEventListener("mouseover", buttonsHover);
+        submitButton.addEventListener("mouseout", buttonsHover);
+
+        clearButton.addEventListener("mouseover", buttonsHover);
+        clearButton.addEventListener("mouseout", buttonsHover);
+
+        submitButton.addEventListener("click", startSearch);
+
+        clearButton.addEventListener("click", clearHighlight)
+    })();
+
+
 }
 _DosFilter();
