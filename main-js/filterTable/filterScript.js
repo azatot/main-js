@@ -8,7 +8,7 @@ _DosFilter = () => {
         html_el.type;
         return html_el;
 
-    }
+    };
 
     const _stylesObj = {
 
@@ -47,7 +47,7 @@ _DosFilter = () => {
         arrow: `
             display: flex;
             
-            height: 7em;
+            height: 6.1em;
             background-color: rgb(226, 226, 226);
             padding: 0px;
             border-radius: 10px;
@@ -65,8 +65,7 @@ _DosFilter = () => {
             opacity: 1;
             transition: .3s;
             border: 0px solid;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
+            border-radius: 10px;
             background: rgb(226, 226, 226);
             box-shadow: 0px 0px 8px 0px #00000070;
 
@@ -106,156 +105,122 @@ _DosFilter = () => {
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
-            
             margin: 0 1em;
         `
+    };
 
-    }
 
-    // creating elements
     const firstDiv = new Dos_HTML_Element("div", "dos_firstDiv", "dos_active");
     const dos_arrow = new Dos_HTML_Element("img");
     dos_arrow.src = "https://unitronicsplc.com/wp-content/uploads/intense-cache/icons/plugin/font-awesome/arrow-circle-right.svg";
-    const dos_wrapper = new Dos_HTML_Element("div", "dos_wrapper", "dos_active")
+    const dos_wrapper = new Dos_HTML_Element("div", "dos_wrapper", "dos_active");
     const new_dos_wrapper = new Dos_HTML_Element("div", "dos_secondDiv", "dos_active");
-    const newInput = new Dos_HTML_Element("input");
-    newInput.placeholder = 'words to search...';
+    const fieldInput = new Dos_HTML_Element("input");
+
+    fieldInput.placeholder = defaultPlaceholder();
     const submitButton = new Dos_HTML_Element("input", "dos_search_button");
     submitButton.type = "submit";
     submitButton.value = "FIND";
     const clearButton = new Dos_HTML_Element("input", "dos_clear_button");
     clearButton.type = "submit";
-    clearButton.value = "CLEAR";
-    const buttonWrapper = new Dos_HTML_Element("div", "dos_buts_wrapper")
+    clearButton.value = "RESET";
+    const buttonWrapper = new Dos_HTML_Element("div", "dos_buts_wrapper");
 
-    // styling this elements
+
     dos_wrapper.style.cssText = _stylesObj.main_wrapper;
     firstDiv.style.cssText = _stylesObj.button_Show;
     dos_arrow.style.cssText = _stylesObj.arrow;
     new_dos_wrapper.style.cssText = _stylesObj.wrapper_For_Inputs;
-    newInput.style.cssText = _stylesObj.filter_Input_Field;
+    fieldInput.style.cssText = _stylesObj.filter_Input_Field;
     submitButton.style.cssText = _stylesObj.filter_Submit_Button;
     clearButton.style.cssText = _stylesObj.filter_Submit_Button;
     buttonWrapper.style.cssText = _stylesObj.buttons_wrapper;
 
-    // appearing those elements
     document.body.prepend(dos_wrapper);
     dos_wrapper.append(firstDiv);
     firstDiv.appendChild(dos_arrow);
     dos_wrapper.append(new_dos_wrapper);
-    new_dos_wrapper.append(newInput);
+    new_dos_wrapper.append(fieldInput);
     new_dos_wrapper.append(buttonWrapper);
     buttonWrapper.append(submitButton);
     buttonWrapper.append(clearButton);
 
 
 
-    // main logic
-    let findedElements = [];
-    let counter = 0;
-    const startTransform = dos_arrow.style.transform;
-    let vpNameList = document.querySelectorAll("td");
+    let findedElements = [],
+        counter = 0;
 
+    const vpNameList = Array.from(document.querySelectorAll("td"));
 
+    function defaultPlaceholder() { return "Enter search words..." };
 
     // 1
     startSearch = () => {
-        if (String(newInput.value) == "") {
-            newInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 3px 3px inset";
-            newInput.placeholder = "Please, type something here"
+        if (String(fieldInput.value) == "") {
+            fieldInput.style.boxShadow = "rgba(255, 0, 0, 0.49) 0px 0px 3px 3px inset";
+            fieldInput.placeholder = `Please ${defaultPlaceholder().toLowerCase()}`;
         } else {
-            let formattedValues = newInput.value.split(',');
+            let formattedValues = fieldInput.value.split(',');
             formattedValues = formattedValues.map(el => el = String(el.toLowerCase().trim()));
-
-            insertArgs(formattedValues);
-            newInput.value = "";
-            
+            fieldInput.value = "";
+            console.log(formattedValues);
+            return insertArgs(formattedValues, "green");
         }
 
-    }
+    };
     // 2
-    let insertArgs = (formattedArray) => {
-        console.log(formattedArray)
-        vpNameList.forEach((el, i) => {
-            console.log(el.innerText.indexOf(formattedArray[i]));
-            
-        })
-    }
+    let insertArgs = (formattedArray, bgColor, color) => {
+        formattedArray.forEach((el, i) => {
+            for (let targetNodeFromList of vpNameList) {
+                if (targetNodeFromList.innerText.toLowerCase().trim().includes(el)) {
+                    
+                    fieldInput.placeholder = "SUCCESS!!!";
+                    targetNodeFromList.style.backgroundColor = bgColor;
+                    targetNodeFromList.style.color = color;
+                    findedElements.push(targetNodeFromList);
 
-    // 3
-    someFunc = (str, bgColor) => {
-        
-    }
-
-    // 4
-    highlightElements = (str, bgColor) => {
-        vpNameList("td").forEach((el, i) => {
-            let lowCaseText = el.innerText.toLowerCase().trim();
-            if (lowCaseText.includes("цільова строка")) {
-                console.log(" ");
+                } 
             }
         })
-    }
-
-
-
-    // 5
-    clearHighlight = () => {
+    };
+    // 3
+    resetFilterToDefault = () => {
         findedElements.forEach((el) => {
             el.style.backgroundColor = null;
         })
         findedElements.length = 0;
-    }
-
-
-
-
-   // події, прикраси та вспливашки
+        fieldInput.placeholder = defaultPlaceholder();
+        console.log(findedElements);
+    };
+    // вспливашки всякі і красівості
+    // стрілочка
     showPopUpWindow = () => {
         let visible = false;
-        dos_wrapper.onmouseover = () => {
-            start_color = event.target.style.backgroundColor;
-            if (event.target.id === firstDiv.id) {
-                event.target.style.cssText += `
-                    background-color: #7faeff;
-                    cursor: pointer;
-
-                `;
-
-            }
-
-        }
-        dos_wrapper.onmouseout = () => {
-            if (event.target.id === firstDiv.id) {
-                event.target.style.backgroundColor = start_color;
-
-            }
-
-        }
-
-        firstDiv.onclick = showClose = () => {
-            if (visible) {
-                if (event.target.tagName === "IMG") {
-                    visible = false;
-                    event.target.style.transform = startTransform;
-                    new_dos_wrapper.style.opacity = '0';
+        (animateArrow => {
+            const startTransform = dos_arrow.style.transform;
+            firstDiv.onclick = showClose = () => {
+                if (visible) {
+                    if (event.target.tagName === "IMG") {
+                        visible = false;
+                        event.target.style.transform = startTransform;
+                        new_dos_wrapper.style.opacity = '0';
+                    };
+                    setTimeout(() => {
+                        new_dos_wrapper.style.display = "none";
+                    }, 300);
+                } else {
+                    if (event.target.tagName === "IMG") {
+                        visible = true;
+                        event.target.style.transform = "scale(-1,1)";
+                        new_dos_wrapper.style.opacity = 1;
+                    };
+                    setTimeout(() => {
+                        new_dos_wrapper.style.display = "flex";
+                    }, 300);
                 }
-                setTimeout(() => {
-                    new_dos_wrapper.style.display = "none";
-                }, 300);
-            } else {
-                if (event.target.tagName === "IMG") {
-                    visible = true;
-                    event.target.style.transform = "scale(-1,1)";
-                    new_dos_wrapper.style.opacity = 1;
-                }
-                setTimeout(() => {
-                    new_dos_wrapper.style.display = "flex";
-                }, 300);
             }
-        }
-
-    }
+        })()
+    };
     showPopUpWindow();
 
     function buttonsHover(event) {
@@ -271,7 +236,7 @@ _DosFilter = () => {
             style.border = "1px solid";
         }
 
-    }
+    };
 
     eventListeners = (() => {
         submitButton.addEventListener("mouseover", buttonsHover);
@@ -279,12 +244,12 @@ _DosFilter = () => {
 
         clearButton.addEventListener("mouseover", buttonsHover);
         clearButton.addEventListener("mouseout", buttonsHover);
+        clearButton.addEventListener("click", resetFilterToDefault);
 
         submitButton.addEventListener("click", startSearch);
 
-        clearButton.addEventListener("click", clearHighlight)
+        
     })();
 
-
-}
+};
 _DosFilter();
